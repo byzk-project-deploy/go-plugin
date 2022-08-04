@@ -1,10 +1,10 @@
 package plugin
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"io"
 	"io/ioutil"
 	"log"
@@ -668,19 +668,19 @@ func TestHelperProcess(*testing.T) {
 	}
 }
 
-func helperTLSProvider() (*tls.Config, error) {
-	serverCert, err := tls.X509KeyPair([]byte(TestClusterServerCert), []byte(TestClusterServerKey))
+func helperTLSProvider() (*gmtls.Config, error) {
+	serverCert, err := gmtls.X509KeyPair([]byte(TestClusterServerCert), []byte(TestClusterServerKey))
 	if err != nil {
 		return nil, err
 	}
 
 	rootCAs := x509.NewCertPool()
 	rootCAs.AppendCertsFromPEM([]byte(TestClusterCACert))
-	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{serverCert},
+	tlsConfig := &gmtls.Config{
+		Certificates: []gmtls.Certificate{serverCert},
 		RootCAs:      rootCAs,
 		ClientCAs:    rootCAs,
-		ClientAuth:   tls.VerifyClientCertIfGiven,
+		ClientAuth:   gmtls.VerifyClientCertIfGiven,
 		ServerName:   "127.0.0.1",
 	}
 	tlsConfig.BuildNameToCertificate()

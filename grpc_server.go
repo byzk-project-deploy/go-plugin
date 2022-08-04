@@ -2,16 +2,16 @@ package plugin
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"io"
 	"net"
 
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin/internal/plugin"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
@@ -42,7 +42,7 @@ type GRPCServer struct {
 
 	// TLS should be the TLS configuration if available. If this is nil,
 	// the connection will not have transport security.
-	TLS *tls.Config
+	TLS *gmtls.Config
 
 	// DoneCh is the channel that is closed when this server has exited.
 	DoneCh chan struct{}
@@ -65,7 +65,7 @@ func (s *GRPCServer) Init() error {
 	// Create our server
 	var opts []grpc.ServerOption
 	if s.TLS != nil {
-		opts = append(opts, grpc.Creds(credentials.NewTLS(s.TLS)))
+		opts = append(opts, grpc.Creds(gmcredentials.NewTLS(s.TLS)))
 	}
 	s.server = s.Server(opts)
 

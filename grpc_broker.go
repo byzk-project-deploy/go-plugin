@@ -2,9 +2,10 @@ package plugin
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"log"
 	"net"
 	"sync"
@@ -15,7 +16,6 @@ import (
 
 	"github.com/oklog/run"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 // streamer interface is used in the broker to send/receive connection
@@ -260,7 +260,7 @@ type GRPCBroker struct {
 	nextId   uint32
 	streamer streamer
 	streams  map[uint32]*gRPCBrokerPending
-	tls      *tls.Config
+	tls      *gmtls.Config
 	doneCh   chan struct{}
 	o        sync.Once
 
@@ -272,7 +272,7 @@ type gRPCBrokerPending struct {
 	doneCh chan struct{}
 }
 
-func newGRPCBroker(s streamer, tls *tls.Config) *GRPCBroker {
+func newGRPCBroker(s streamer, tls *gmtls.Config) *GRPCBroker {
 	return &GRPCBroker{
 		streamer: s,
 		streams:  make(map[uint32]*gRPCBrokerPending),
@@ -319,7 +319,7 @@ func (b *GRPCBroker) AcceptAndServe(id uint32, s func([]grpc.ServerOption) *grpc
 
 	var opts []grpc.ServerOption
 	if b.tls != nil {
-		opts = []grpc.ServerOption{grpc.Creds(credentials.NewTLS(b.tls))}
+		opts = []grpc.ServerOption{grpc.Creds(gmcredentials.NewTLS(b.tls))}
 	}
 
 	server := s(opts)

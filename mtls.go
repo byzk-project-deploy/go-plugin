@@ -2,9 +2,8 @@ package plugin
 
 import (
 	"bytes"
-	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -15,7 +14,7 @@ import (
 // generateCert generates a temporary certificate for plugin authentication. The
 // certificate and private key are returns in PEM format.
 func generateCert() (cert []byte, privateKey []byte, err error) {
-	key, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	key, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -46,7 +45,7 @@ func generateCert() (cert []byte, privateKey []byte, err error) {
 		IsCA:                  true,
 	}
 
-	der, err := x509.CreateCertificate(rand.Reader, template, template, key.Public(), key)
+	der, err := x509.CreateCertificate(rand.Reader, template, template, &key.PublicKey, key)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -56,13 +55,13 @@ func generateCert() (cert []byte, privateKey []byte, err error) {
 		return nil, nil, err
 	}
 
-	keyBytes, err := x509.MarshalECPrivateKey(key)
-	if err != nil {
-		return nil, nil, err
-	}
+	keyBytes := x509.MarshalPKCS1PrivateKey(key)
+	//if err != nil {
+	//	return nil, nil, err
+	//}
 
 	var keyOut bytes.Buffer
-	if err := pem.Encode(&keyOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: keyBytes}); err != nil {
+	if err = pem.Encode(&keyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: keyBytes}); err != nil {
 		return nil, nil, err
 	}
 

@@ -1,8 +1,8 @@
 package plugin
 
 import (
-	"crypto/tls"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
 	"io"
 	"net"
 	"net/rpc"
@@ -34,7 +34,7 @@ func newRPCClient(c *Client) (*RPCClient, error) {
 	}
 
 	if c.config.TLSConfig != nil {
-		conn = tls.Client(conn, c.config.TLSConfig)
+		conn = gmtls.Client(conn, c.config.TLSConfig)
 	}
 
 	// Create the actual RPC client

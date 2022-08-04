@@ -1,8 +1,9 @@
 package plugin
 
 import (
-	"crypto/tls"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"math"
 	"net"
 	"time"
@@ -10,11 +11,10 @@ import (
 	"github.com/hashicorp/go-plugin/internal/plugin"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
-func dialGRPCConn(tls *tls.Config, dialer func(string, time.Duration) (net.Conn, error), dialOpts ...grpc.DialOption) (*grpc.ClientConn, error) {
+func dialGRPCConn(tls *gmtls.Config, dialer func(string, time.Duration) (net.Conn, error), dialOpts ...grpc.DialOption) (*grpc.ClientConn, error) {
 	// Build dialing options.
 	opts := make([]grpc.DialOption, 0)
 
@@ -30,7 +30,7 @@ func dialGRPCConn(tls *tls.Config, dialer func(string, time.Duration) (net.Conn,
 		opts = append(opts, grpc.WithInsecure())
 	} else {
 		opts = append(opts, grpc.WithTransportCredentials(
-			credentials.NewTLS(tls)))
+			gmcredentials.NewTLS(tls)))
 	}
 
 	opts = append(opts,

@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"context"
 	"crypto/subtle"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"hash"
 	"io"
 	"io/ioutil"
@@ -135,7 +135,7 @@ type ClientConfig struct {
 	SecureConfig *SecureConfig
 
 	// TLSConfig is used to enable TLS on the RPC client.
-	TLSConfig *tls.Config
+	TLSConfig *gmtls.Config
 
 	// Managed represents if the client should be managed by the
 	// plugin package or not. If true, then by calling CleanupClients,
@@ -564,7 +564,7 @@ func (c *Client) Start() (addr net.Addr, err error) {
 			c.logger.Error("failed to generate client certificate", "error", err)
 			return nil, err
 		}
-		cert, err := tls.X509KeyPair(certPEM, keyPEM)
+		cert, err := gmtls.X509KeyPair(certPEM, keyPEM)
 		if err != nil {
 			c.logger.Error("failed to parse client certificate", "error", err)
 			return nil, err
@@ -572,10 +572,10 @@ func (c *Client) Start() (addr net.Addr, err error) {
 
 		cmd.Env = append(cmd.Env, fmt.Sprintf("PLUGIN_CLIENT_CERT=%s", certPEM))
 
-		c.config.TLSConfig = &tls.Config{
-			Certificates: []tls.Certificate{cert},
-			ClientAuth:   tls.RequireAndVerifyClientCert,
-			MinVersion:   tls.VersionTLS12,
+		c.config.TLSConfig = &gmtls.Config{
+			Certificates: []gmtls.Certificate{cert},
+			ClientAuth:   gmtls.RequireAndVerifyClientCert,
+			MinVersion:   gmtls.VersionTLS12,
 			ServerName:   "localhost",
 		}
 	}
@@ -963,7 +963,7 @@ func (c *Client) dialer(_ string, timeout time.Duration) (net.Conn, error) {
 	// If we have a TLS config we wrap our connection. We only do this
 	// for net/rpc since gRPC uses its own mechanism for TLS.
 	if c.protocol == ProtocolNetRPC && c.config.TLSConfig != nil {
-		conn = tls.Client(conn, c.config.TLSConfig)
+		conn = gmtls.Client(conn, c.config.TLSConfig)
 	}
 
 	return conn, nil

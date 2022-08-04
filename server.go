@@ -2,11 +2,11 @@ package plugin
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"io"
 	"io/ioutil"
 	"net"
@@ -60,7 +60,7 @@ type ServeConfig struct {
 	HandshakeConfig
 
 	// TLSProvider is a function that returns a configured tls.Config.
-	TLSProvider func() (*tls.Config, error)
+	TLSProvider func() (*gmtls.Config, error)
 
 	// Plugins are the plugins that are served.
 	// The implied version of this PluginSet is the Handshake.ProtocolVersion.
@@ -282,7 +282,7 @@ func Serve(opts *ServeConfig) {
 		listener.Close()
 	}()
 
-	var tlsConfig *tls.Config
+	var tlsConfig *gmtls.Config
 	if opts.TLSProvider != nil {
 		tlsConfig, err = opts.TLSProvider()
 		if err != nil {
@@ -308,17 +308,17 @@ func Serve(opts *ServeConfig) {
 			panic(err)
 		}
 
-		cert, err := tls.X509KeyPair(certPEM, keyPEM)
+		cert, err := gmtls.X509KeyPair(certPEM, keyPEM)
 		if err != nil {
 			logger.Error("failed to parse server certificate", "error", err)
 			panic(err)
 		}
 
-		tlsConfig = &tls.Config{
-			Certificates: []tls.Certificate{cert},
-			ClientAuth:   tls.RequireAndVerifyClientCert,
+		tlsConfig = &gmtls.Config{
+			Certificates: []gmtls.Certificate{cert},
+			ClientAuth:   gmtls.RequireAndVerifyClientCert,
 			ClientCAs:    clientCertPool,
-			MinVersion:   tls.VersionTLS12,
+			MinVersion:   gmtls.VersionTLS12,
 			RootCAs:      clientCertPool,
 			ServerName:   "localhost",
 		}
@@ -365,7 +365,7 @@ func Serve(opts *ServeConfig) {
 		// If we have a TLS configuration then we wrap the listener
 		// ourselves and do it at that level.
 		if tlsConfig != nil {
-			listener = tls.NewListener(listener, tlsConfig)
+			listener = gmtls.NewListener(listener, tlsConfig)
 		}
 
 		// Create the RPC server to dispense
