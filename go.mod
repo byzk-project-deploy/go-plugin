@@ -1,4 +1,4 @@
-module github.com/hashicorp/go-plugin
+module github.com/byzk-project-deploy/go-plugin
 
 go 1.17
 
