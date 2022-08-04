@@ -2,13 +2,13 @@ package plugin
 
 import (
 	"fmt"
+	"github.com/byzk-project-deploy/go-plugin/internal/plugin"
 	"github.com/tjfoc/gmsm/gmtls"
 	"github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"math"
 	"net"
 	"time"
 
-	"github.com/hashicorp/go-plugin/internal/plugin"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"

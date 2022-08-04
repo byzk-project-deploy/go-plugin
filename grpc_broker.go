@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/byzk-project-deploy/go-plugin/internal/plugin"
 	"github.com/tjfoc/gmsm/gmtls"
 	"github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"log"
@@ -11,8 +12,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"github.com/hashicorp/go-plugin/internal/plugin"
 
 	"github.com/oklog/run"
 	"google.golang.org/grpc"
