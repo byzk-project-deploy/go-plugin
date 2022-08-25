@@ -8,8 +8,8 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-plugin/examples/bidirectional/shared"
+	"github.com/byzk-project-deploy/go-plugin"
+	"github.com/byzk-project-deploy/go-plugin/examples/bidirectional/shared"
 )
 
 type addHelper struct{}

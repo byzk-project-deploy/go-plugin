@@ -1,9 +1,9 @@
 package shared
 
 import (
+	plugin "github.com/byzk-project-deploy/go-plugin"
+	"github.com/byzk-project-deploy/go-plugin/examples/bidirectional/proto"
 	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-plugin/examples/bidirectional/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

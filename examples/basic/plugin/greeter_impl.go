@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/byzk-project-deploy/go-plugin"
+	"github.com/byzk-project-deploy/go-plugin/examples/basic/commons"
 	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-plugin/examples/basic/commons"
 )
 
 // Here is a real implementation of Greeter

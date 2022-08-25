@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
+	grpctest "github.com/byzk-project-deploy/go-plugin/test/grpc"
 	"github.com/golang/protobuf/ptypes/empty"
 	hclog "github.com/hashicorp/go-hclog"
-	grpctest "github.com/hashicorp/go-plugin/test/grpc"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

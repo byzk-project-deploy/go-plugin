@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/byzk-project-deploy/go-plugin"
+	"github.com/byzk-project-deploy/go-plugin/examples/basic/commons"
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-plugin/examples/basic/commons"
 )
 
 func main() {
